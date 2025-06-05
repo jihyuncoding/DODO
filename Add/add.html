@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>기록 추가/수정하기</title>
+  <link rel="stylesheet" href="add.css" />
+  <style>
+    /* 이모지 픽커 최소 스타일 (기존과 동일) */
+    .emoji-picker {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 8px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 300px;
+      max-height: 180px;
+      overflow-y: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+    .emoji-option {
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .emoji-section {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-wrapper">
+    <div class="top-bar">
+      <img
+        src="../images/iconoir_nav-arrow-left.png"
+        class="back-icon"
+        onclick="history.back()"
+      />
+      <span class="page-title" id="page-title">지역</span>
+    </div>
+
+    <div class="form">
+      <!-- 1) 제목 입력 -->
+      <input type="text" id="title-input" class="title-underline" placeholder="제목: ex. 2025 가족여행" />
+
+      <!-- 2) 지역 선택 칩 -->
+      <div class="region-group">
+        <div class="region-chip base" id="base-chip">지역</div>
+        <button class="add-region" id="add-region-btn">+ 지역 추가하기</button>
+      </div>
+
+      <!-- 3) 사진 업로드 & 슬라이더 -->
+      <div class="photo-box">
+        <div class="photo-placeholder" id="photo-placeholder">
+          <img src="../images/Group.svg" alt="사진 아이콘" />
+          <button type="button" class="photo-button" id="photo-add-btn">사진 추가하기</button>
+          <p>기억에 남는 순간을 추가하세요!</p>
+        </div>
+        <input type="file" id="photo-input" accept="image/*" multiple style="display: none;" />
+        <div id="photo-slider" class="photo-slider" style="display: none;"></div>
+      </div>
+
+      <!-- 4) 이모지 선택 섹션 -->
+      <div class="emoji-section">
+        <button class="add-emoji" aria-label="이모지 추가" id="emoji-toggle">
+          <img src="../images/Button-Icon.svg" alt="이모지 추가" class="emoji-icon" id="emoji-display" />
+        </button>
+        <div class="emoji-picker" id="emoji-picker">
+          <span class="emoji-option">🌍</span><span class="emoji-option">🌄</span><span class="emoji-option">✈️</span>
+          <span class="emoji-option">🏨</span><span class="emoji-option">🌇</span><span class="emoji-option">🛳️</span>
+          <span class="emoji-option">🚗</span><span class="emoji-option">🚤</span><span class="emoji-option">🚩</span>
+          <span class="emoji-option">🌞</span><span class="emoji-option">🌊</span><span class="emoji-option">🌿</span>
+          <span class="emoji-option">🍜</span><span class="emoji-option">🍔</span><span class="emoji-option">🍽️</span>
+          <span class="emoji-option">🍷</span><span class="emoji-option">🍳</span><span class="emoji-option">🍦</span>
+          <span class="emoji-option">💃</span><span class="emoji-option">👯</span><span class="emoji-option">👮</span>
+          <span class="emoji-option">😍</span><span class="emoji-option">😁</span><span class="emoji-option">😊</span>
+          <span class="emoji-option">😎</span><span class="emoji-option">🤣</span><span class="emoji-option">😂</span>
+          <span class="emoji-option">😘</span><span class="emoji-option">😭</span><span class="emoji-option">😳</span>
+          <span class="emoji-option">😆</span><span class="emoji-option">😇</span><span class="emoji-option">😋</span>
+          <span class="emoji-option">😌</span><span class="emoji-option">😜</span><span class="emoji-option">😝</span>
+          <span class="emoji-option">😛</span><span class="emoji-option">😢</span><span class="emoji-option">😡</span>
+          <span class="emoji-option">😱</span><span class="emoji-option">😤</span><span class="emoji-option">😷</span>
+          <span class="emoji-option">🤒</span><span class="emoji-option">🤕</span><span class="emoji-option">🤢</span>
+          <span class="emoji-option">🤧</span><span class="emoji-option">🥶</span><span class="emoji-option">🥵</span>
+          <span class="emoji-option">🥳</span><span class="emoji-option">😬</span><span class="emoji-option">😐</span>
+          <span class="emoji-option">😶</span><span class="emoji-option">🙄</span><span class="emoji-option">😯</span>
+          <span class="emoji-option">😲</span><span class="emoji-option">😴</span><span class="emoji-option">😪</span>
+          <span class="emoji-option">😵</span><span class="emoji-option">🤯</span><span class="emoji-option">🤠</span>
+          <span class="emoji-option">🥴</span><span class="emoji-option">🤓</span><span class="emoji-option">🧐</span>
+          <span class="emoji-option">🤨</span><span class="emoji-option">😔</span><span class="emoji-option">😖</span>
+          <span class="emoji-option">😞</span><span class="emoji-option">😟</span><span class="emoji-option">😣</span>
+          <span class="emoji-option">😫</span><span class="emoji-option">😩</span><span class="emoji-option">😓</span>
+          <span class="emoji-option">😥</span><span class="emoji-option">😰</span><span class="emoji-option">🤤</span>
+          <span class="emoji-option">😢</span><span class="emoji-option">😭</span><span class="emoji-option">😤</span>
+          <span class="emoji-option">🤬</span><span class="emoji-option">😠</span><span class="emoji-option">😡</span>
+          <span class="emoji-option">😇</span><span class="emoji-option">😷</span><span class="emoji-option">🤒</span>
+          <span class="emoji-option">🤕</span><span class="emoji-option">🤢</span><span class="emoji-option">🤧</span>
+          <span class="emoji-option">🥵</span><span class="emoji-option">🥶</span><span class="emoji-option">🥴</span>
+          <span class="emoji-option">🤠</span><span class="emoji-option">😈</span><span class="emoji-option">👹</span>
+          <span class="emoji-option">👺</span><span class="emoji-option">💀</span><span class="emoji-option">👻</span>
+          <span class="emoji-option">👽</span><span class="emoji-option">🤖</span><span class="emoji-option">🎃</span>
+          <span class="emoji-option">😺</span><span class="emoji-option">😸</span><span class="emoji-option">😹</span>
+          <span class="emoji-option">😻</span><span class="emoji-option">😼</span><span class="emoji-option">😽</span>
+          <span class="emoji-option">🙀</span><span class="emoji-option">😿</span><span class="emoji-option">😾</span>
+          <span class="emoji-option">🙈</span><span class="emoji-option">🙉</span><span class="emoji-option">🙊</span>
+          <span class="emoji-option">💋</span><span class="emoji-option">💌</span><span class="emoji-option">💘</span>
+          <span class="emoji-option">💝</span><span class="emoji-option">💖</span><span class="emoji-option">💗</span>
+          <span class="emoji-option">💓</span><span class="emoji-option">💞</span><span class="emoji-option">💕</span>
+          <span class="emoji-option">💟</span><span class="emoji-option">❣️</span><span class="emoji-option">❤️</span>
+          <span class="emoji-option">🧡</span><span class="emoji-option">💛</span><span class="emoji-option">💚</span>
+          <span class="emoji-option">💙</span><span class="emoji-option">💜</span><span class="emoji-option">🖤</span>
+          <span class="emoji-option">🤍</span><span class="emoji-option">🤎</span><span class="emoji-option">❤️‍🔥</span>
+          <span class="emoji-option">❤️‍🩹</span><span class="emoji-option">💯</span><span class="emoji-option">💢</span>
+          <span class="emoji-option">💥</span><span class="emoji-option">💫</span><span class="emoji-option">💦</span>
+          <span class="emoji-option">💨</span><span class="emoji-option">🕳️</span><span class="emoji-option">💣</span>
+          <span class="emoji-option">💬</span><span class="emoji-option">🗯️</span><span class="emoji-option">💭</span>
+          <span class="emoji-option">🗨️</span><span class="emoji-option">🕶️</span><span class="emoji-option">👒</span>
+          <span class="emoji-option">🎩</span><span class="emoji-option">👑</span><span class="emoji-option">⛑️</span>
+          <span class="emoji-option">🎒</span><span class="emoji-option">👝</span><span class="emoji-option">👛</span>
+          <span class="emoji-option">👜</span><span class="emoji-option">💼</span><span class="emoji-option">🎓</span>
+          <span class="emoji-option">🧳</span><span class="emoji-option">🧢</span><span class="emoji-option">🥾</span>
+        </div>
+        <div class="emoji-guide">아이콘을 추가해 보세요.</div>
+      </div>
+
+      <!-- 5) 메모 -->
+      <textarea class="memo" id="memo-input" placeholder="그 때의 기억을 되짚어보며 기록해 보세요."></textarea>
+
+      <!-- 6) 버튼: 임시저장, 저장하기 -->
+      <button class="temp-save" id="temp-save-btn">임시저장</button>
+      <button class="save-button" id="save-btn">저장하기</button>
+    </div>
+  </div>
+
+  <script>
+    // -- 0. URL 파라미터 읽기 및 전역 변수 선언 --
+    const params = new URLSearchParams(window.location.search);
+    let regionParam = params.get("region") || "지역";
+    const postIdParam = params.get("postId");
+    const editIndex = params.get("edit"); // 임시편집 인덱스
+
+    const pageTitleEl = document.getElementById("page-title");
+    const baseChipEl = document.getElementById("base-chip");
+    const regionGroupEl = document.querySelector(".region-group");
+    const addRegionBtn = document.getElementById("add-region-btn");
+
+    const titleInput = document.getElementById("title-input");
+    const photoInput = document.getElementById("photo-input");
+    const photoPlaceholder = document.getElementById("photo-placeholder");
+    const photoSlider = document.getElementById("photo-slider");
+    const photoAddBtn = document.getElementById("photo-add-btn");
+
+    const emojiToggle = document.getElementById("emoji-toggle");
+    const emojiPicker = document.getElementById("emoji-picker");
+    const emojiDisplay = document.getElementById("emoji-display");
+
+    const memoInput = document.getElementById("memo-input");
+    const tempSaveBtn = document.getElementById("temp-save-btn");
+    const saveBtn = document.getElementById("save-btn");
+
+    let selectedDistricts = [];   // 세부 지역 배열
+    let existingPhotos = [];       // 사진 데이터 URL 배열
+    let currentEmoji = "";         // 이모지
+    let restoredFromStorage = false;
+
+    // -- 1. 상위 지역(카테고리) 설정 (regionParam) --
+    pageTitleEl.textContent = regionParam;
+    baseChipEl.textContent = regionParam;
+
+    // ─────────────────────────────
+    // -- 2. 세부 지역(칩) 렌더링 함수 --
+    function renderDistrictChips() {
+      regionGroupEl.querySelectorAll(".region-chip.sub").forEach(el => el.remove());
+      selectedDistricts.forEach(district => {
+        const tag = document.createElement("div");
+        tag.className = "region-chip sub";
+        const textSpan = document.createElement("span");
+        textSpan.textContent = district;
+        const removeIcon = document.createElement("span");
+        removeIcon.className = "remove-chip";
+        removeIcon.innerHTML = "&times;";
+        removeIcon.onclick = (e) => {
+          e.stopPropagation();
+          selectedDistricts = selectedDistricts.filter(d => d !== district);
+          renderDistrictChips();
+        };
+        tag.appendChild(textSpan);
+        tag.appendChild(removeIcon);
+        regionGroupEl.insertBefore(tag, addRegionBtn);
+      });
+      addRegionBtn.style.display = selectedDistricts.length >= 4 ? "none" : "inline-flex";
+    }
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 3. localStorage 복원 코드 (임시 저장 중간 단계 복원) --
+    {
+      // (A) region‐select.html → add.html (상세편집 아님) 복원
+      const fromSelected = JSON.parse(localStorage.getItem("selectedDistricts") || "null");
+      if (fromSelected && Array.isArray(fromSelected)) {
+        selectedDistricts = fromSelected.slice(0, 4);
+        localStorage.removeItem("selectedDistricts");
+        renderDistrictChips();
+        restoredFromStorage = true;
+      } else {
+        // (B) temp 복원 (add.html 클릭 이후 돌아올 때)
+        const fromTemp = JSON.parse(localStorage.getItem("tempDistricts") || "null");
+        if (fromTemp && Array.isArray(fromTemp)) {
+          selectedDistricts = fromTemp.slice(0, 4);
+          localStorage.removeItem("tempDistricts");
+          renderDistrictChips();
+          restoredFromStorage = true;
+        }
+      }
+
+      // 사진 복원
+      const savedPhotos = JSON.parse(localStorage.getItem("tempPhotos") || "null");
+      if (savedPhotos && Array.isArray(savedPhotos) && savedPhotos.length > 0) {
+        existingPhotos = savedPhotos;
+        renderPhotos(existingPhotos);
+        localStorage.removeItem("tempPhotos");
+        restoredFromStorage = true;
+      }
+
+      // 제목 복원
+      const savedTitle = localStorage.getItem("tempTitle");
+      if (savedTitle !== null) {
+        titleInput.value = savedTitle;
+        localStorage.removeItem("tempTitle");
+        restoredFromStorage = true;
+      }
+
+      // 이모지 복원
+      const savedEmoji = localStorage.getItem("tempEmoji");
+      if (savedEmoji) {
+        currentEmoji = savedEmoji;
+        const span = document.createElement("span");
+        span.className = "emoji-icon";
+        span.textContent = currentEmoji;
+        const existing = document.querySelector("#emoji-toggle .emoji-icon, #emoji-toggle img");
+        if (existing) existing.replaceWith(span);
+        localStorage.removeItem("tempEmoji");
+        restoredFromStorage = true;
+      }
+
+      // 메모 복원
+      const savedMemo = localStorage.getItem("tempMemo");
+      if (savedMemo !== null) {
+        memoInput.value = savedMemo;
+        localStorage.removeItem("tempMemo");
+        restoredFromStorage = true;
+      }
+    }
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 4. “정식 저장된” 수정 모드(postIdParam) 또는 “임시 저장된” 수정 모드(editIndex) 처리 --
+    if (postIdParam) {
+      // 기존 posts 데이터에서 찾아서 렌더
+      const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+      const targetPost = allPosts.find(p => p.id === postIdParam);
+      if (targetPost) {
+        // 4-1) regionParam, 제목, 태그, 사진, 이모지, 메모 모두 불러오기
+        regionParam = targetPost.region;
+        pageTitleEl.textContent = regionParam;
+        baseChipEl.textContent = regionParam;
+
+        titleInput.value = targetPost.title;
+        selectedDistricts = [...targetPost.districts];
+        existingPhotos = [...targetPost.photos];
+        renderDistrictChips();
+        if (existingPhotos.length) renderPhotos(existingPhotos);
+
+        currentEmoji = targetPost.emoji || "";
+        if (currentEmoji) {
+          emojiDisplay.replaceWith(
+            Object.assign(document.createElement("span"), {
+              className: "emoji-icon",
+              textContent: currentEmoji,
+              id: "emoji-display"
+            })
+          );
+        }
+
+        memoInput.value = targetPost.memo;
+      }
+    } else if (editIndex !== null) {
+      // 4-2) 임시저장된 데이터(editRecord) 복원
+      const tempData = JSON.parse(localStorage.getItem("editRecord") || "null");
+      if (tempData) {
+        // tempData 구조: { region, title, tags, photos, emoji, memo } 
+        // (옛날 버전엔 { region, title, tags, image, emoji } 형태일 수 있음)
+
+        // --- 상위 지역 복원 ---
+        regionParam = tempData.region || regionParam;
+        pageTitleEl.textContent = regionParam;
+        baseChipEl.textContent = regionParam;
+
+        // --- 제목 복원 ---
+        titleInput.value = tempData.title || "";
+
+        // --- 세부 지역(tags) 복원 ---
+        selectedDistricts = Array.isArray(tempData.tags) ? [...tempData.tags] : [];
+        renderDistrictChips();
+
+        // --- 사진 복원 (photos 배열 우선, 없으면 예전 image 하나로 처리) ---
+        if (Array.isArray(tempData.photos) && tempData.photos.length > 0) {
+          existingPhotos = [...tempData.photos];
+        } else if (typeof tempData.image === "string" && tempData.image) {
+          // 구 버전에서 image만 저장했을 때
+          existingPhotos = [tempData.image];
+        } else {
+          existingPhotos = [];
+        }
+        if (existingPhotos.length) renderPhotos(existingPhotos);
+
+        // --- 이모지 복원 ---
+        currentEmoji = tempData.emoji || "";
+        if (currentEmoji) {
+          emojiDisplay.replaceWith(
+            Object.assign(document.createElement("span"), {
+              className: "emoji-icon",
+              textContent: currentEmoji,
+              id: "emoji-display"
+            })
+          );
+        }
+
+        // --- 메모 복원 ---
+        memoInput.value = tempData.memo || "";
+      }
+    }
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 5. region-select.html로 이동 전 임시 저장 (이전 로직 그대로) --
+    addRegionBtn.onclick = () => {
+      // 현재 상태를 임시저장
+      localStorage.setItem("tempPhotos", JSON.stringify(existingPhotos));
+      localStorage.setItem("tempDistricts", JSON.stringify(selectedDistricts));
+      localStorage.setItem("tempTitle", titleInput.value);
+      localStorage.setItem("tempEmoji", currentEmoji);
+      localStorage.setItem("tempMemo", memoInput.value);
+
+      let url = `region-select.html?region=${encodeURIComponent(regionParam)}`;
+      if (postIdParam) {
+        url += `&selected=${encodeURIComponent(JSON.stringify(selectedDistricts))}&postId=${encodeURIComponent(postIdParam)}`;
+      } else if (editIndex !== null) {
+        // 편집 모드인 경우, edit 인덱스도 함께 넘겨줌
+        url += `&selected=${encodeURIComponent(JSON.stringify(selectedDistricts))}&edit=${encodeURIComponent(editIndex)}`;
+      }
+      location.href = url;
+    };
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 6. 사진 업로드/렌더/수정/삭제 기능 (이전 로직 그대로) --
+    function readFileAsDataURL(file) {
+      return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderPhotos(dataURLs) {
+      photoPlaceholder.style.display = "none";
+      photoSlider.style.display = "flex";
+      photoSlider.innerHTML = "";
+      dataURLs.forEach((dataUrl, idx) => {
+        const card = document.createElement("div");
+        card.className = "photo-card";
+
+        const img = document.createElement("img");
+        img.src = dataUrl;
+        card.appendChild(img);
+
+        const pageIndicator = document.createElement("div");
+        pageIndicator.className = "page-indicator";
+        pageIndicator.textContent = `${idx + 1}/${dataURLs.length}`;
+        card.appendChild(pageIndicator);
+
+        const replaceBtn = document.createElement("div");
+        replaceBtn.className = "btn-replace";
+        replaceBtn.textContent = "✎ 수정";
+        replaceBtn.onclick = () => {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = "image/*";
+          input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const newDataUrl = await readFileAsDataURL(file);
+            existingPhotos[idx] = newDataUrl;
+            renderPhotos(existingPhotos);
+          };
+          input.click();
+        };
+        card.appendChild(replaceBtn);
+
+        const deleteBtn = document.createElement("div");
+        deleteBtn.className = "btn-delete";
+        deleteBtn.textContent = "✕";
+        deleteBtn.onclick = () => {
+          existingPhotos.splice(idx, 1);
+          if (existingPhotos.length === 0) {
+            photoSlider.style.display = "none";
+            photoPlaceholder.style.display = "flex";
+          } else {
+            renderPhotos(existingPhotos);
+          }
+        };
+        card.appendChild(deleteBtn);
+
+        photoSlider.appendChild(card);
+      });
+    }
+
+    photoAddBtn.onclick = () => photoInput.click();
+    photoInput.addEventListener("change", async function () {
+      const files = Array.from(this.files);
+      if (!files.length) return;
+
+      const newDataUrls = [];
+      for (const file of files) {
+        const dataUrl = await readFileAsDataURL(file);
+        newDataUrls.push(dataUrl);
+      }
+      existingPhotos = existingPhotos.concat(newDataUrls);
+      renderPhotos(existingPhotos);
+      this.value = "";
+    });
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 7. 이모지 선택 이벤트 (이전 로직 그대로) --
+    emojiToggle.addEventListener("click", () => {
+      emojiPicker.style.display = emojiPicker.style.display === "flex" ? "none" : "flex";
+    });
+
+    document.addEventListener("click", e => {
+      if (!emojiPicker.contains(e.target) && !emojiToggle.contains(e.target)) {
+        emojiPicker.style.display = "none";
+      }
+    });
+
+    document.querySelectorAll(".emoji-option").forEach(option => {
+      option.addEventListener("click", () => {
+        currentEmoji = option.textContent;
+        const span = document.createElement("span");
+        span.className = "emoji-icon";
+        span.textContent = currentEmoji;
+        const existing = document.querySelector("#emoji-toggle .emoji-icon, #emoji-toggle img");
+        if (existing) existing.replaceWith(span);
+        emojiPicker.style.display = "none";
+      });
+    });
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // -- 8. “정식 저장하기” 기능 (이전 로직 그대로) --
+    saveBtn.onclick = () => {
+  const title = titleInput.value.trim();
+  if (!title) {
+    alert("제목을 입력해주세요.");
+    return;
+  }
+  if (!existingPhotos.length) {
+    alert("최소 한 장의 사진을 추가해주세요.");
+    return;
+  }
+  if (!currentEmoji) {
+    alert("이모지를 하나 선택해주세요.");
+    return;
+  }
+  if (selectedDistricts.length === 0) {
+    alert("최소 한 개의 세부 지역을 선택해주세요.");
+    return;
+  }
+
+  const now = new Date().toISOString();
+  const postObj = {
+    id: postIdParam || (new Date().getTime().toString()),
+    region: regionParam,
+    districts: [...selectedDistricts],
+    title,
+    photos: [...existingPhotos],
+    emoji: currentEmoji,
+    memo: memoInput.value.trim(),
+    createdAt: postIdParam
+      ? JSON.parse(localStorage.getItem("posts")).find(p => p.id === postIdParam).createdAt
+      : now
+  };
+
+  // 1) posts에 저장
+  const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+  if (postIdParam) {
+    const idx = allPosts.findIndex(p => p.id === postIdParam);
+    if (idx !== -1) allPosts[idx] = postObj;
+  } else {
+    allPosts.push(postObj);
+  }
+  localStorage.setItem("posts", JSON.stringify(allPosts));
+
+  // 2) “임시저장된” 상태(editIndex)가 있으면 해당 tempRecords 항목을 삭제
+  if (editIndex !== null) {
+    const existingTemp = JSON.parse(localStorage.getItem("tempRecords") || "[]");
+    existingTemp.splice(editIndex, 1);               // editIndex 위치 항목 제거
+    localStorage.setItem("tempRecords", JSON.stringify(existingTemp));
+    localStorage.removeItem("editRecord");           // 편집용 키도 제거
+  }
+
+  alert(postIdParam ? "수정 완료되었습니다." : "저장되었습니다.");
+  location.href = `../Detail/detail.html?region=${encodeURIComponent(regionParam)}`;
+};
+
+    // ─────────────────────────────
+
+    // ─────────────────────────────
+    // 9. “임시저장” 기능 (전체 상태 저장 혹은 수정)
+tempSaveBtn.onclick = () => {
+  // 1) 폼의 모든 입력값 읽어오기
+  const title = titleInput.value.trim();
+  const tags = [...selectedDistricts];
+  const emoji = currentEmoji;
+  const photos = [...existingPhotos]; // 사진 전체 배열
+  const memo = memoInput.value.trim();
+
+  // 2) 임시저장용 객체 (전체 입력 정보)
+  const tempRecord = {
+    region: regionParam,    // 상위 지역
+    title: title || "",
+    tags,                  // 세부 지역 배열
+    photos,                // 사진 데이터URL 배열
+    emoji,                 // 이모지
+    memo                   // 메모
+  };
+
+  // 3) localStorage의 "tempRecords" 불러오기
+  const existingTemp = JSON.parse(localStorage.getItem("tempRecords") || "[]");
+
+  if (editIndex !== null) {
+    // “편집 모드”라면, 해당 인덱스 덮어쓰기
+    existingTemp[editIndex] = tempRecord;
+  } else {
+    // 새로 저장할 때는 맨 뒤에 추가
+    existingTemp.push(tempRecord);
+  }
+
+  localStorage.setItem("tempRecords", JSON.stringify(existingTemp));
+
+  // 4) edit 모드였다면 editRecord 제거 (선택 사항이지만 권장)
+  localStorage.removeItem("editRecord");
+
+  // 5) 사용자에게 알림 후 temp.html로 이동
+  alert(editIndex !== null ? "임시저장(수정)되었습니다." : "임시저장되었습니다.");
+  location.href = `../Detail/temp.html`;
+};
+
+    // ─────────────────────────────
+  </script>
+</body>
+</html>

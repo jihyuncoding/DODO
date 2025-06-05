@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도도기록</title>
+  <link rel="stylesheet" href="detail.css" />
+</head>
+<body>
+  <div class="mobile-wrapper">
+    <div class="top-bar">
+      <img
+        src="../images/iconoir_nav-arrow-left.png"
+        class="back-icon"
+        onclick="location.href = '../Main/main.html';"
+      />
+      <span id="region-title" class="page-title">지역명</span>
+      <!-- “임시저장 목록”은 항상 같은 temp.html을 가리킵니다. -->
+      <a href="temp.html" class="temp-link">임시저장 목록</a>
+    </div>
+
+    <div id="record-container"></div>
+
+    <button class="add-button" id="add-button">
+      + 기록 추가하기
+    </button>
+  </div>
+
+  <!-- 삭제 확인 모달 -->
+  <div class="modal-overlay" id="delete-modal" style="display: none;">
+    <div class="modal-content">
+      <img src="../images/iconoir_warning-triangle-solid.svg" alt="경고" class="modal-icon" />
+      <p>삭제하시겠어요?</p>
+      <p>기록을 삭제하면 복구할 수 없어요!</p>
+      <div class="modal-buttons">
+        <button onclick="closeModal()">취소</button>
+        <button onclick="deleteCard()">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1) URL 파라미터에서 region 가져오기
+    const params = new URLSearchParams(window.location.search);
+    const region = params.get("region") || "지역";
+    document.getElementById("region-title").textContent = region;
+
+    // 2) localStorage의 “posts” 읽어서, 해당 지역(post.region)만 필터
+    const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+    const records = allPosts.filter(p => p.region === region);
+
+    const container = document.getElementById("record-container");
+
+    // 3) records가 비어 있으면 안내 문구
+    if (records.length === 0) {
+      const emptyMsg = document.createElement("div");
+      emptyMsg.className = "no-record";
+      emptyMsg.textContent = "";
+      container.appendChild(emptyMsg);
+    }
+
+    // 4) records를 순회하며 카드 생성
+    records.forEach((record) => {
+      const card = document.createElement("div");
+      card.className = "record-card";
+      card.dataset.postId = record.id; // postId 정보 저장
+
+      // 카드 클릭 시 상세 페이지(기록 상세)로 이동
+      card.addEventListener("click", () => {
+        location.href = `record-detail.html?region=${encodeURIComponent(region)}&postId=${encodeURIComponent(record.id)}`;
+      });
+
+      // 사진: photos 배열의 첫 번째 이미지 사용. 없으면 기본 이미지
+      const imageSrc = (record.photos && record.photos.length > 0)
+        ? record.photos[0]
+        : "../images/default.png";
+
+      // 태그 목록: 첫 번째는 항상 region → class="tag black"으로 스타일링
+      const tagHTML = `
+        <span class="tag black">${region}</span>
+        ${record.districts.map(tag => `<span class="tag">${tag}</span>`).join('')}
+      `;
+
+      card.innerHTML = `
+        <img src="${imageSrc}" class="record-image" alt="기록 이미지" />
+        <div class="record-info">
+          <span class="emoji">${record.emoji}</span>
+          <span class="record-title">${record.title}</span>
+        </div>
+        <div class="tag-list">${tagHTML}</div>
+        <div class="card-menu-toggle" onclick="toggleMenu(event)">⋯</div>
+        <div class="card-menu" style="display: none;">
+          <button class="menu-item edit" onclick="editCard(event, '${record.id}')">
+            <img src="../images/iconoir_map-pin.svg" alt="편집 아이콘" />
+            <span>편집하기</span>
+          </button>
+          <hr />
+          <button class="menu-item delete" onclick="confirmDelete(event)">
+            <img src="../images/iconoir_trash.svg" alt="삭제 아이콘" />
+            <span>삭제하기</span>
+          </button>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    // “기록 추가하기” 버튼 클릭 시 add.html로 이동 (region 파라미터 전달)
+    document.getElementById("add-button").addEventListener("click", () => {
+      location.href = `../Add/add.html?region=${encodeURIComponent(region)}`;
+    });
+
+    // 5) 카드 메뉴 열기/닫기
+    function toggleMenu(e) {
+      e.stopPropagation();
+      const menu = e.currentTarget.nextElementSibling;
+      document.querySelectorAll(".card-menu").forEach(m => m.style.display = "none");
+      menu.style.display = "block";
+    }
+
+    // 6) 삭제 로직: 모달 띄우기
+    let cardToDelete = null;
+    function confirmDelete(e) {
+      e.stopPropagation();
+      const buttonEl = e.currentTarget;
+      const card = buttonEl.closest('.record-card');
+      cardToDelete = card;
+      document.getElementById("delete-modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("delete-modal").style.display = "none";
+      cardToDelete = null;
+    }
+
+    function deleteCard() {
+      if (!cardToDelete) return;
+      const postId = cardToDelete.dataset.postId;
+      // 1) 화면에서 삭제
+      cardToDelete.remove();
+      // 2) localStorage에서도 posts에서 삭제
+      const updatedPosts = allPosts.filter(p => p.id !== postId);
+      localStorage.setItem("posts", JSON.stringify(updatedPosts));
+      closeModal();
+    }
+
+    // 7) 편집하기: add.html로 이동 (region, postId 파라미터 전달)
+    function editCard(e, postId) {
+      e.stopPropagation();
+      location.href = `../Add/add.html?region=${encodeURIComponent(region)}&postId=${encodeURIComponent(postId)}`;
+    }
+
+    // 8) 모달 바깥 클릭 시 카드 메뉴 · 모달 닫기
+    window.addEventListener("click", function(e) {
+      if (!e.target.closest('.card-menu') && !e.target.closest('.card-menu-toggle')) {
+        document.querySelectorAll(".card-menu").forEach(m => m.style.display = "none");
+      }
+      if (e.target.id === 'delete-modal') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

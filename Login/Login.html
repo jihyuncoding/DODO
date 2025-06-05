@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도도기록</title>
+  <link rel="stylesheet" href="Login.css" />
+</head>
+<body>
+  <div class="mobile-wrapper">
+    <img class="logo-image" src="../images/logo.png" alt="logo" />
+    <div>
+      <form onsubmit="return handleLogin()" class="login-form">
+        <input type="text" class="login-field" id="uid" placeholder="아이디" required />
+        <input type="password" class="login-field" id="pwd" placeholder="비밀번호" required />
+        <p id="error-message">아이디 또는 비밀번호가 틀렸습니다</p>
+        <input type="submit" value="로그인" class="submit-btn" disabled />
+      </form>
+      <div class="links">
+        <a href="../Signup/signup.html" class="link-button">회원가입</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const uidInput = document.getElementById("uid");
+    const pwdInput = document.getElementById("pwd");
+    const loginBtn = document.querySelector(".submit-btn");
+    const errorMessage = document.getElementById("error-message");
+
+    function toggleLoginButton() {
+  const uidFilled = uidInput.value.trim().length > 0;
+  const pwdFilled = pwdInput.value.trim().length > 0;
+
+  if (uidFilled || pwdFilled) { 
+    loginBtn.classList.add("active");
+    loginBtn.disabled = false;
+  } else {
+    loginBtn.classList.remove("active");
+    loginBtn.disabled = true;
+  }
+}
+
+
+    uidInput.addEventListener("input", () => {
+      toggleLoginButton();
+      clearError();
+    });
+
+    pwdInput.addEventListener("input", () => {
+      toggleLoginButton();
+      clearError();
+    });
+
+    function handleLogin() {
+      const uid = uidInput.value.trim();
+      const pwd = pwdInput.value.trim();
+
+      if (uid === "swu2025" && pwd === "swu2025!") {
+        window.location.href = "../Main/main.html";
+      } else {
+        showError();
+      }
+
+      return false;
+    }
+
+    function showError() {
+      uidInput.classList.add("error");
+      pwdInput.classList.add("error");
+      errorMessage.style.display = "block";
+    }
+
+    function clearError() {
+      uidInput.classList.remove("error");
+      pwdInput.classList.remove("error");
+      errorMessage.style.display = "none";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도도기록</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <div class="mobile-wrapper">
+    <div class="content">
+      <p class="title">나의 여행 기록</p>
+      <p class="subtext">당신이 방문한 여행지를<br>한눈에 확인해 보세요</p>
+
+      <div class="map-wrapper">
+        <img src="../images/Isolation_Mode (1).svg" alt="대한민국 지도" class="map-image" />
+
+        <!-- 지역 마커: data-region 속성 값에 따라 JS에서 count값을 채워줍니다. -->
+        <div class="marker" style="top: 85px; left: 120px;" data-region="서울">
+          <span class="region">서울</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 65px; left: 70px;" data-region="인천">
+          <span class="region">인천</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 70px; left: 220px;" data-region="강원">
+          <span class="region">강원</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 120px; left: 160px;" data-region="경기">
+          <span class="region">경기</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 145px; left: 210px;" data-region="충북">
+          <span class="region">충북</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 170px; left: 280px;" data-region="경북">
+          <span class="region">경북</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 202px; left: 150px;" data-region="대전">
+          <span class="region">대전</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 240px; left: 240px;" data-region="대구">
+          <span class="region">대구</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 265px; left: 300px;" data-region="울산">
+          <span class="region">울산</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 166px; left: 135px;" data-region="세종">
+          <span class="region">세종</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 190px; left: 90px;" data-region="충남">
+          <span class="region">충남</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 260px; left: 120px;" data-region="전북">
+          <span class="region">전북</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 305px; left: 110px;" data-region="광주">
+          <span class="region">광주</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 350px; left: 120px;" data-region="전남">
+          <span class="region">전남</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 300px; left: 210px;" data-region="경남">
+          <span class="region">경남</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 303px; left: 285px;" data-region="부산">
+          <span class="region">부산</span>
+          <span class="count-circle">0</span>
+        </div>
+        <div class="marker" style="top: 450px; left: 100px;" data-region="제주">
+          <span class="region">제주</span>
+          <span class="count-circle">0</span>
+        </div>
+      </div>
+
+      <!-- 나침반 -->
+      <img src="../images/compass.svg" class="compass" alt="나침반" />
+    </div>
+  </div>
+
+  <script>
+    // 1) localStorage에서 posts 배열을 읽어옵니다.
+    const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+
+    // 2) 각 지역별 post 개수를 계산합니다.
+    //    { "서울": 5, "인천": 3, ... } 형태의 객체로 매핑
+    const countByRegion = {};
+    allPosts.forEach(post => {
+      const region = post.region;
+      if (!countByRegion[region]) {
+        countByRegion[region] = 0;
+      }
+      countByRegion[region]++;
+    });
+
+    // 3) 화면의 모든 .marker 요소를 순회하며, data-region 값으로 count를 찾아 표시
+    document.querySelectorAll('.marker').forEach(marker => {
+      const region = marker.getAttribute('data-region');
+      const circle = marker.querySelector('.count-circle');
+      const count = countByRegion[region] || 0;
+      circle.textContent = count;
+      // 0개인 경우 원을 숨기고 싶다면 다음 코드 사용:
+      // if (count === 0) circle.style.display = 'none';
+    });
+
+    // 4) 마커 클릭 시 detail 페이지로 이동 (기존 로직 유지)
+    document.querySelectorAll('.marker').forEach(marker => {
+      marker.addEventListener('click', function () {
+        const region = this.getAttribute('data-region');
+        window.location.href = `../Detail/detail.html?region=${encodeURIComponent(region)}`;
+      });
+    });
+  </script>
+</body>
+</html>

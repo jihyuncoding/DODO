@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>기록 상세 보기</title>
+  <link rel="stylesheet" href="record-detail.css" />
+</head>
+<body>
+  <div class="mobile-wrapper">
+    <div class="top-bar">
+      <img
+        src="../images/iconoir_nav-arrow-left.png"
+        class="back-icon"
+        onclick="location.href = 'detail.html?region=' + encodeURIComponent(regionParam)"
+      />
+      <!-- 이제 이곳에 “record.title”이 표시됩니다 -->
+      <span class="page-title" id="page-title">제목</span>
+    </div>
+
+    <div class="form">
+      <!-- (1) 제목을 상단 바 대신 폼 상단에 표시하고, 읽기 전용으로 둡니다 -->
+      <input
+        type="text"
+        id="title-input"
+        class="title-underline"
+        readonly
+        style="margin-bottom: 16px; font-size: 24px; font-weight: 600; color: #1D1D1F;"
+      />
+
+      <!-- (2) 상위 지역(카테고리) 칩: “base-chip” -->
+      <div class="region-group" style="margin-bottom: 12px;">
+        <div class="region-chip base" id="base-chip">지역</div>
+        <!-- (3) 세부 지역(칩)들은 스크립트로 동적으로 추가됩니다 -->
+      </div>
+
+      <!-- (4) 사진 슬라이더 -->
+      <div class="photo-box" style="margin-bottom: 12px;">
+        <div id="photo-slider" class="photo-slider" style="display: none;"></div>
+      </div>
+
+      <!-- (5) 이모지 표시 -->
+      <div class="emoji-section" style="pointer-events: none; margin-bottom: 12px;">
+        <span class="emoji-icon" id="emoji-display" style="font-size: 32px;"></span>
+      </div>
+
+      <!-- (6) 메모 -->
+      <textarea
+        class="memo"
+        id="memo-input"
+        readonly
+        style="background-color: #F5F5F5;"
+        placeholder="메모가 없습니다."
+      ></textarea>
+    </div>
+
+    <div class="modal-overlay" id="delete-modal" style="display: none;">
+        <div class="modal-content">
+          <img src="../images/iconoir_warning-triangle-solid.svg" alt="경고" class="warning-icon" />
+          <p>정말 삭제하시겠습니까?</p>
+          <button id="confirm-delete">삭제</button>
+          <button id="cancel-delete">취소</button>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    // 0) URL 파라미터에서 region & postId 가져오기
+    const params = new URLSearchParams(window.location.search);
+    const regionParam = params.get("region") || "지역";
+    const postIdParam = params.get("postId");
+
+    // 1) localStorage에서 “posts”를 읽어 해당 record 찾기
+    const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+    const record = allPosts.find(p => p.id === postIdParam);
+
+    if (!record) {
+      // postId가 잘못된 경우 안내 메시지
+      const container = document.querySelector(".form");
+      container.innerHTML = "";
+      const errorMsg = document.createElement("div");
+      errorMsg.style.textAlign = "center";
+      errorMsg.style.marginTop = "40px";
+      errorMsg.style.color = "#FF3B30";
+      errorMsg.textContent = "존재하지 않는 기록이거나 삭제된 기록입니다.";
+      container.appendChild(errorMsg);
+    } else {
+      // 2) 상단 바 “page-title”에 record.title 설정 (글자 크기 등 CSS는 add.css 그대로 적용됩니다)
+      document.getElementById("page-title").textContent = record.title;
+
+      // 3) 폼 상단 input#title-input에도 record.title을 채워줍니다
+      const titleInput = document.getElementById("title-input");
+      titleInput.value = record.title;
+
+      // 4) 상위 지역(카테고리) 칩 설정
+      const baseChipEl = document.getElementById("base-chip");
+      baseChipEl.textContent = regionParam;
+
+      // 5) 세부 지역(칩) 렌더링
+      const regionGroupEl = document.querySelector(".region-group");
+      record.districts.forEach(district => {
+        const tag = document.createElement("div");
+        tag.className = "region-chip sub";
+        tag.textContent = district;
+        regionGroupEl.appendChild(tag);
+      });
+
+      // 6) 사진 슬라이더 렌더링
+      const photoSlider = document.getElementById("photo-slider");
+      if (record.photos && record.photos.length > 0) {
+        photoSlider.style.display = "flex";
+        record.photos.forEach((dataUrl, idx) => {
+          const card = document.createElement("div");
+          card.className = "photo-card";
+
+          const img = document.createElement("img");
+          img.src = dataUrl;
+          card.appendChild(img);
+
+          const pageIndicator = document.createElement("div");
+          pageIndicator.className = "page-indicator";
+          pageIndicator.textContent = `${idx + 1}/${record.photos.length}`;
+          card.appendChild(pageIndicator);
+
+          photoSlider.appendChild(card);
+        });
+      }
+
+      // 7) 이모지 표시
+      const emojiDisplay = document.getElementById("emoji-display");
+      emojiDisplay.textContent = record.emoji || "";
+
+      // 8) 메모 채우기
+      const memoInput = document.getElementById("memo-input");
+      memoInput.value = record.memo || "";
+    }
+  </script>
+</body>
+</html>
