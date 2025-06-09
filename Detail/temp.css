@@ -19,37 +19,30 @@ body {
   flex-direction: column;
 }
 
-/* 상단 바 - 공통 */
 .top-bar {
-  position: relative;
-  height: 56px;
   display: flex;
   align-items: center;
-  justify-content: center; /* 중앙 정렬 */
-  padding: 3px 16px;
-  background: #fff;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+  position: relative;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
 }
 
-/* 뒤로가기 아이콘 - 왼쪽 고정 */
+
 .back-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
 }
 
-/* 제목 텍스트 - 정확히 중앙 */
 .page-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--Gray-Gray08, #383843);
-  line-height: 1;
+  position: absolute;  
+  left: 50%;            
+  top: 50%;             
+  transform: translate(-50%, -50%); 
 }
-
 
 #record-container {
   flex: 1;

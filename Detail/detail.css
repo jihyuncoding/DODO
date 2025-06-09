@@ -20,32 +20,41 @@ body {
     flex-direction: column;
   }
   
+  /* 1) .top-bar를 position:relative로 */
   .top-bar {
-    flex-shrink: 0;
     display: flex;
     align-items: center;
+    position: relative;
     justify-content: space-between;
-    padding: 15px 16px;
-    background: #FFF;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.08);
+    padding: 12px 16px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
   }
   
   .back-icon {
-    width: 32px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
   }
+
+/* 2) .page-title을 절대위치로 중앙 정렬 */
+.page-title {
+  position: absolute;      /* 추가 */
+  left: 50%;               /* 추가 */
+  transform: translateX(-50%); /* 추가 */
+  padding-left: 0;         /* 기존 padding-left 제거 */
+  top: 50%;                /* 수직 센터링 (조정 가능) */
+  transform: translate(-50%, -50%); /* 수평·수직 센터링 */
+  margin: 0;               /* 불필요 여백 제거 */
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--Gray-Gray08, #383843);
+}
   
-  .page-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--Gray-Gray08, #383843);
-    padding-left: 30px;
-  }
-  
-  .temp-link {
-    font-size: 14px;
-    color: var(--Blue-Blue08, #007AF5);
-    text-decoration: none;
+  .temp-link,
+  .add-button {
+    display: none !important;
   }
   
   #record-container {
@@ -161,26 +170,6 @@ body {
     height: 1px;
     background-color: #eee;
   }
-  
-  /* 추가 버튼 */
-  .add-button {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    height: 48px;
-    background: #00C2A8;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    font-size: 16px;
-    font-weight: 500;
-    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-    z-index: 5;
-  }
-  
   /* 모달 */
   .modal-overlay {
     display: none;

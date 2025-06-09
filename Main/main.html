@@ -13,9 +13,11 @@
       <p class="subtext">당신이 방문한 여행지를<br>한눈에 확인해 보세요</p>
 
       <div class="map-wrapper">
-        <img src="../images/Isolation_Mode (1).svg" alt="대한민국 지도" class="map-image" />
+        
+        <!-- 지도 사진 삽입 -->
+        <img src="../images/Map.svg" alt="대한민국 지도" class="map-image" />
 
-        <!-- 지역 마커: data-region 속성 값에 따라 JS에서 count값을 채워줍니다. -->
+        <!-- 지도 핀 위치 -->
         <div class="marker" style="top: 85px; left: 120px;" data-region="서울">
           <span class="region">서울</span>
           <span class="count-circle">0</span>
@@ -86,43 +88,19 @@
         </div>
       </div>
 
-      <!-- 나침반 -->
+      <!-- 나침반 삽입 -->
       <img src="../images/compass.svg" class="compass" alt="나침반" />
+
+      <!-- 기록 추가 버튼 -->
+      <button class="add-button">
+        <span class="plus-icon">＋</span>
+        기록 추가하기
+      </button>
+
     </div>
-  </div>
+  </div> 
 
-  <script>
-    // 1) localStorage에서 posts 배열을 읽어옵니다.
-    const allPosts = JSON.parse(localStorage.getItem("posts") || "[]");
+  <script src="main.js"></script>
 
-    // 2) 각 지역별 post 개수를 계산합니다.
-    //    { "서울": 5, "인천": 3, ... } 형태의 객체로 매핑
-    const countByRegion = {};
-    allPosts.forEach(post => {
-      const region = post.region;
-      if (!countByRegion[region]) {
-        countByRegion[region] = 0;
-      }
-      countByRegion[region]++;
-    });
-
-    // 3) 화면의 모든 .marker 요소를 순회하며, data-region 값으로 count를 찾아 표시
-    document.querySelectorAll('.marker').forEach(marker => {
-      const region = marker.getAttribute('data-region');
-      const circle = marker.querySelector('.count-circle');
-      const count = countByRegion[region] || 0;
-      circle.textContent = count;
-      // 0개인 경우 원을 숨기고 싶다면 다음 코드 사용:
-      // if (count === 0) circle.style.display = 'none';
-    });
-
-    // 4) 마커 클릭 시 detail 페이지로 이동 (기존 로직 유지)
-    document.querySelectorAll('.marker').forEach(marker => {
-      marker.addEventListener('click', function () {
-        const region = this.getAttribute('data-region');
-        window.location.href = `../Detail/detail.html?region=${encodeURIComponent(region)}`;
-      });
-    });
-  </script>
 </body>
 </html>
